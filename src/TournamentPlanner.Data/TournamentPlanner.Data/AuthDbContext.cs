@@ -3,7 +3,7 @@ using TournamentPlanner.Data.Entities;
 
 namespace TournamentPlanner.Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AuthDbContext(DbContextOptions<AuthDbContext> options) : DbContext(options)
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<UserPermission> UserPermissions => Set<UserPermission>();

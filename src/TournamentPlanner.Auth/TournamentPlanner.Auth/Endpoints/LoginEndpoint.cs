@@ -20,7 +20,7 @@ public static class LoginEndpoint
 
     private static async Task<IResult> Handle(
         LoginRequest request,
-        AppDbContext db,
+        AuthDbContext db,
         ITokenService tokenService,
         IOptions<JwtSettings> jwtSettings)
     {

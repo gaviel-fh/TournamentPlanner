@@ -17,7 +17,7 @@ public static class LogoutEndpoint
 
     private static async Task<IResult> Handle(
         ClaimsPrincipal user,
-        AppDbContext db)
+        AuthDbContext db)
     {
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
 

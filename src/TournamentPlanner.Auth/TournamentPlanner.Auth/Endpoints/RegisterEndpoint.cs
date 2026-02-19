@@ -21,7 +21,7 @@ public static class RegisterEndpoint
 
     private static async Task<IResult> Handle(
         RegisterRequest request,
-        AppDbContext db,
+        AuthDbContext db,
         ITokenService tokenService,
         IOptions<JwtSettings> jwtSettings)
     {
