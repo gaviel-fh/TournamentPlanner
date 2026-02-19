@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using TournamentPlanner.Auth.Extensions;
+using TournamentPlanner.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +10,9 @@ builder.AddServiceDefaults();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.AddNpgsqlDbContext<AppDbContext>("tournamentdb");
+builder.Services.AddTournamentAuth(builder.Configuration);
 
 var app = builder.Build();
 
@@ -22,7 +28,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
+
 app.UseHttpsRedirection();
+app.UseTournamentAuth();
 
 var summaries = new[]
 {
@@ -43,7 +56,7 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
-app.Run();
+await app.RunAsync();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {

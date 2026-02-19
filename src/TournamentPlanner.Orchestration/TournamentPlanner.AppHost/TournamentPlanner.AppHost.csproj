@@ -12,4 +12,8 @@
     <ProjectReference Include="..\..\TournamentPlanner.Api\TournamentPlanner.Api\TournamentPlanner.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.1.1" />
+  </ItemGroup>
+
 </Project>
