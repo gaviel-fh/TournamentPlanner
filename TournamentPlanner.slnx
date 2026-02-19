@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/TournamentPlanner.Api/">
+    <Project Path="src/TournamentPlanner.Api/TournamentPlanner.Api/TournamentPlanner.Api.csproj" />
+  </Folder>
+  <Folder Name="/TournamentPlanner.Orchestration/">
+    <Project Path="src/TournamentPlanner.Orchestration/TournamentPlanner.AppHost/TournamentPlanner.AppHost.csproj" />
+    <Project Path="src/TournamentPlanner.Orchestration/TournamentPlanner.ServiceDefaults/TournamentPlanner.ServiceDefaults.csproj" />
+  </Folder>
+</Solution>
