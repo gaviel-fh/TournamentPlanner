@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TournamentPlanner.Data.Migrations
+namespace TournamentPlanner.Data.Migrations.Auth
 {
     /// <inheritdoc />
     public partial class Initial : Migration

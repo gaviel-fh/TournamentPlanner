@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\TournamentPlanner.Auth\TournamentPlanner.Auth\TournamentPlanner.Auth.csproj" />
     <ProjectReference Include="..\..\TournamentPlanner.Data\TournamentPlanner.Data\TournamentPlanner.Data.csproj" />
     <ProjectReference Include="..\..\TournamentPlanner.Orchestration\TournamentPlanner.ServiceDefaults\TournamentPlanner.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\TournamentPlanner.Tournaments\TournamentPlanner.Tournaments\TournamentPlanner.Tournaments.csproj" />
   </ItemGroup>
 
 </Project>

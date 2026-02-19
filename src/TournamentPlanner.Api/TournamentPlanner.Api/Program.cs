@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using TournamentPlanner.Auth.Extensions;
 using TournamentPlanner.Data;
+using TournamentPlanner.Tournaments.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,9 @@ builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 
 builder.AddNpgsqlDbContext<AuthDbContext>("tournamentdb");
+builder.AddNpgsqlDbContext<TournamentDbContext>("tournamentdb");
 builder.Services.AddTournamentAuth(builder.Configuration);
+builder.Services.AddTournamentPlanner();
 
 var app = builder.Build();
 
@@ -30,12 +33,16 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    await db.Database.MigrateAsync();
+    var authDb = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    await authDb.Database.MigrateAsync();
+
+    var tournamentDb = scope.ServiceProvider.GetRequiredService<TournamentDbContext>();
+    await tournamentDb.Database.MigrateAsync();
 }
 
 app.UseHttpsRedirection();
 app.UseTournamentAuth();
+app.UseTournamentPlanner();
 
 var summaries = new[]
 {
@@ -44,7 +51,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

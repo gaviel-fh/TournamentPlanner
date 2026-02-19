@@ -8,6 +8,9 @@
   <Folder Name="/TournamentPlanner.Data/">
     <Project Path="src/TournamentPlanner.Data/TournamentPlanner.Data/TournamentPlanner.Data.csproj" />
   </Folder>
+  <Folder Name="/TournamentPlanner.Tournaments/">
+    <Project Path="src/TournamentPlanner.Tournaments/TournamentPlanner.Tournaments/TournamentPlanner.Tournaments.csproj" />
+  </Folder>
   <Folder Name="/TournamentPlanner.Orchestration/">
     <Project Path="src/TournamentPlanner.Orchestration/TournamentPlanner.AppHost/TournamentPlanner.AppHost.csproj" />
     <Project Path="src/TournamentPlanner.Orchestration/TournamentPlanner.ServiceDefaults/TournamentPlanner.ServiceDefaults.csproj" />
