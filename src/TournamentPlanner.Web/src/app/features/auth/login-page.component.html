@@ -1,0 +1,52 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <header>
+      <p class="eyebrow">Tournament Planner</p>
+      <h1>Sign in</h1>
+      <p class="subtitle">Use your account to access your tournaments.</p>
+    </header>
+
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>
+        <span>Email</span>
+        <input
+          type="email"
+          [formControl]="emailControl"
+          autocomplete="email"
+          placeholder="you@company.com"
+        />
+      </label>
+      @if (shouldShowEmailError()) {
+        <p class="field-error">Please enter a valid email address.</p>
+      }
+
+      <label>
+        <span>Password</span>
+        <input
+          type="password"
+          [formControl]="passwordControl"
+          autocomplete="current-password"
+          placeholder="••••••••"
+        />
+      </label>
+      @if (shouldShowPasswordError()) {
+        <p class="field-error">Password must be at least 8 characters.</p>
+      }
+
+      @if (authStore.error()) {
+        <p class="server-error">{{ authStore.error() }}</p>
+      }
+
+      <button type="submit" [disabled]="authStore.loading()">
+        {{ authStore.loading() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+
+    <footer>
+      <p>
+        New here?
+        <a routerLink="/auth/register">Create an account</a>
+      </p>
+    </footer>
+  </section>
+</main>

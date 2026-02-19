@@ -1,0 +1,129 @@
+.home-page {
+  min-height: 100dvh;
+  padding: 2rem 1rem;
+  display: grid;
+  place-items: start center;
+}
+
+.panel {
+  width: min(100%, 65rem);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--text-soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+h1 {
+  margin: 0.3rem 0 0;
+  font-size: 1.8rem;
+}
+
+button {
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.62rem 0.9rem;
+  background: linear-gradient(180deg, var(--primary-soft), var(--primary));
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.content-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  background: var(--surface-soft);
+  padding: 1rem;
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    font-size: 1.05rem;
+  }
+}
+
+dl {
+  margin: 0;
+  display: grid;
+  gap: 0.7rem;
+}
+
+dt {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.98rem;
+  word-break: break-word;
+}
+
+.permission-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.34rem 0.65rem;
+  font-size: 0.85rem;
+  background: #1a2a50;
+}
+
+.muted {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.footer-note {
+  margin: 1rem 0 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+
+  span {
+    color: var(--text);
+  }
+}
+
+@media (max-width: 860px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

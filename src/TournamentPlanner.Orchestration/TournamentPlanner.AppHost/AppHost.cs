@@ -1,15 +1,17 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var postgresPassword = builder.AddParameter("postgres-password", secret: true);
+var postgresPassword = builder.AddParameter(
+    "postgres-password",
+    value: builder.Configuration["POSTGRES_PASSWORD"] ?? "postgres",
+    secret: false);
 
 var postgres = builder.AddPostgres("postgres", password: postgresPassword)
-    .WithHostPort(5432)
     .WithDataVolume()
     .WithPgAdmin();
 
 var db = postgres.AddDatabase("tournamentdb");
 
-builder.AddProject<Projects.TournamentPlanner_Api>("tournamentplanner-api")
+var api = builder.AddProject<Projects.TournamentPlanner_Api>("tournamentplanner-api")
     .WithReference(db)
     .WaitFor(db)
     .WithUrlForEndpoint("https", url =>
@@ -22,5 +24,11 @@ builder.AddProject<Projects.TournamentPlanner_Api>("tournamentplanner-api")
         url.DisplayText = "Scalar";
         url.Url = "/scalar";
     });
+
+builder.AddJavaScriptApp("tournamentplanner-web", "../../TournamentPlanner.Web", "start")
+    .WithReference(api)
+    .WaitFor(api)
+    .WithHttpEndpoint(targetPort: 4200)
+    .WithExternalHttpEndpoints();
 
 builder.Build().Run();

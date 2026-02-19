@@ -1,0 +1,48 @@
+<main class="home-page">
+  <section class="panel">
+    <header class="panel-header">
+      <div>
+        <p class="eyebrow">Signed in</p>
+        <h1>Welcome, {{ displayName() }}</h1>
+      </div>
+      <button type="button" [disabled]="authStore.loading()" (click)="onLogout()">
+        {{ authStore.loading() ? 'Signing out…' : 'Sign out' }}
+      </button>
+    </header>
+
+    <div class="content-grid">
+      <article class="card">
+        <h2>Account</h2>
+        <dl>
+          <div>
+            <dt>Email</dt>
+            <dd>{{ authStore.user()?.email ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>User ID</dt>
+            <dd>{{ authStore.user()?.id ?? 'Unavailable' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="card">
+        <h2>Permissions</h2>
+        @if (authStore.user()?.permissions?.length) {
+          <div class="permission-list">
+            @for (permission of authStore.user()?.permissions; track permission) {
+              <span class="pill">{{ permission }}</span>
+            }
+          </div>
+        } @else {
+          <p class="muted">No explicit permissions found in token claims.</p>
+        }
+      </article>
+    </div>
+
+    <p class="footer-note">
+      Auth endpoints integrated: <span>/auth/register</span>, <span>/auth/login</span>,
+      <span>/auth/refresh</span>,
+      <span>/auth/logout</span>
+    </p>
+  </section>
+</main>
