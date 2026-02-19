@@ -1,0 +1,43 @@
+<section class="card">
+  <header class="section-header">
+    <h2>Existing tournaments</h2>
+    <p>Overview of persisted tournaments and participant counts.</p>
+  </header>
+
+  @if (loading()) {
+    <p class="muted">Loading tournaments…</p>
+  } @else if (!tournaments().length) {
+    <p class="muted">No tournaments found yet.</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Venue</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Disciplines</th>
+            <th>Participants</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of tournaments(); track item.id) {
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.venue }}</td>
+              <td>{{ item.startDateUtc | date: 'medium' }}</td>
+              <td>{{ item.endDateUtc | date: 'medium' }}</td>
+              <td>{{ item.disciplineCount }}</td>
+              <td>{{ item.participantCount }}</td>
+              <td>
+                <span class="pill">{{ item.status }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

@@ -1,0 +1,194 @@
+<section class="card">
+  <header class="section-header">
+    <h2>Create tournament</h2>
+    <p>Finish the setup in steps: basic information, organizers, staff, and bout details.</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-stepper linear>
+      <mat-step [stepControl]="basicInfoGroup">
+        <ng-template matStepLabel>Basic info</ng-template>
+
+        <div formGroupName="basicInfo" class="form-grid">
+          <label>
+            <span>Name</span>
+            <input type="text" formControlName="name" placeholder="Spring Combat Cup" />
+          </label>
+
+          <label>
+            <span>Location / Venue</span>
+            <input type="text" formControlName="venueName" placeholder="Old Arena Hall" />
+          </label>
+
+          <label>
+            <span>Start date & time</span>
+            <input type="datetime-local" formControlName="startDateUtc" />
+          </label>
+
+          <label>
+            <span>End date & time</span>
+            <input type="datetime-local" formControlName="endDateUtc" />
+          </label>
+
+          @if (basicInfoGroup.errors?.['invalidDateOrder']) {
+            <p class="field-error full">End date must be after start date.</p>
+          }
+        </div>
+
+        <div class="step-actions">
+          <button type="button" matStepperNext>Next</button>
+        </div>
+      </mat-step>
+
+      <mat-step [stepControl]="organizersGroup">
+        <ng-template matStepLabel>Organizers</ng-template>
+
+        <div formGroupName="organizers" class="step-content">
+          <p class="hint">Select one or more organizers from the users table.</p>
+
+          @if (usersLoading()) {
+            <p class="hint">Loading users…</p>
+          } @else {
+            <div class="table-wrap">
+              <table class="member-table">
+                <thead>
+                  <tr>
+                    <th>Select</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Nickname</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (user of users(); track user.id) {
+                    <tr>
+                      <td>
+                        <mat-checkbox
+                          [checked]="isOrganizerSelected(user.id)"
+                          (change)="onOrganizerToggle(user.id, $event)"
+                        />
+                      </td>
+                      <td>{{ displayUserName(user) }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.nickname || '—' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          @if (
+            organizersGroup.controls['organizerUserIds'].touched &&
+            organizersGroup.controls['organizerUserIds'].invalid
+          ) {
+            <p class="field-error">At least one organizer must be selected.</p>
+          }
+        </div>
+
+        <div class="step-actions">
+          <button type="button" matStepperPrevious>Back</button>
+          <button type="button" matStepperNext>Next</button>
+        </div>
+      </mat-step>
+
+      <mat-step [stepControl]="staffGroup">
+        <ng-template matStepLabel>Staff</ng-template>
+
+        <div formGroupName="staff" class="step-content">
+          <p class="hint">Select tournament staff from the users table.</p>
+
+          @if (usersLoading()) {
+            <p class="hint">Loading users…</p>
+          } @else {
+            <div class="table-wrap">
+              <table class="member-table">
+                <thead>
+                  <tr>
+                    <th>Select</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Nickname</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (user of users(); track user.id) {
+                    <tr>
+                      <td>
+                        <mat-checkbox
+                          [checked]="isStaffSelected(user.id)"
+                          (change)="onStaffToggle(user.id, $event)"
+                        />
+                      </td>
+                      <td>{{ displayUserName(user) }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>{{ user.nickname || '—' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+
+        <div class="step-actions">
+          <button type="button" matStepperPrevious>Back</button>
+          <button type="button" matStepperNext>Next</button>
+        </div>
+      </mat-step>
+
+      <mat-step [stepControl]="boutInfoGroup">
+        <ng-template matStepLabel>Bout info</ng-template>
+
+        <div formGroupName="boutInfo" class="step-content">
+          <p class="hint">
+            Participants are not assigned manually here. Users can join/accept participation on
+            their own.
+          </p>
+
+          <section class="disciplines" formArrayName="disciplines">
+            <header>
+              <h3>Disciplines</h3>
+              <button type="button" (click)="addDiscipline()">+ Add discipline</button>
+            </header>
+
+            @for (discipline of disciplines.controls; track discipline; let index = $index) {
+              <div class="discipline-row" [formGroupName]="index">
+                <label>
+                  <span>Code</span>
+                  <input type="text" formControlName="code" placeholder="WRESTLING" />
+                </label>
+
+                <label>
+                  <span>Name</span>
+                  <input type="text" formControlName="name" placeholder="Wrestling" />
+                </label>
+
+                <label>
+                  <span>Rounds</span>
+                  <input type="number" min="1" formControlName="roundCount" />
+                </label>
+
+                <label>
+                  <span>Bout interval (minutes)</span>
+                  <input type="number" min="1" formControlName="boutIntervalMinutes" />
+                </label>
+
+                <button type="button" class="remove" (click)="removeDiscipline(index)">
+                  Remove
+                </button>
+              </div>
+            }
+          </section>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" matStepperPrevious>Back</button>
+          <button type="submit" [disabled]="loading()">
+            {{ loading() ? 'Creating…' : 'Create tournament' }}
+          </button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </form>
+</section>

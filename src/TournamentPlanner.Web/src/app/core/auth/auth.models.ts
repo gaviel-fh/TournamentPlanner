@@ -32,3 +32,11 @@ export interface AuthUser {
   lastName: string | null;
   permissions: string[];
 }
+
+export interface AuthUserLookup {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  nickname: string | null;
+}

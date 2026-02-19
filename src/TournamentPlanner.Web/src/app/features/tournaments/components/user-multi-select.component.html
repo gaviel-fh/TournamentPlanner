@@ -1,0 +1,33 @@
+<mat-form-field appearance="outline" class="user-select-field">
+  <mat-label>{{ label() }}</mat-label>
+
+  <mat-chip-grid #chipGrid>
+    @for (user of selectedUsers(); track user.id) {
+      <mat-chip-row (removed)="remove(user.id)">
+        {{ displayUser(user) }}
+        <button matChipRemove type="button" aria-label="Remove user">×</button>
+      </mat-chip-row>
+    }
+
+    <input
+      [placeholder]="placeholder()"
+      [formControl]="searchControl"
+      [required]="required() && !selectedIds().length"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipGrid"
+      (input)="onSearchChange()"
+    />
+  </mat-chip-grid>
+
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+    @if (loading()) {
+      <mat-option disabled>Loading users…</mat-option>
+    } @else if (!filteredUsers().length) {
+      <mat-option disabled>No matching users</mat-option>
+    } @else {
+      @for (user of filteredUsers(); track user.id) {
+        <mat-option [value]="user.id">{{ displayUser(user) }}</mat-option>
+      }
+    }
+  </mat-autocomplete>
+</mat-form-field>

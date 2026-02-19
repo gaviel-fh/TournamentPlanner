@@ -1,0 +1,44 @@
+<main class="tournaments-page">
+  <section class="panel">
+    <header class="panel-header">
+      <div>
+        <p class="eyebrow">Tournament planning</p>
+        <h1>Welcome, {{ displayName() }}</h1>
+        <p class="subtitle">
+          Create tournaments, assign organizers/staff/participants, and configure bout timing.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" [disabled]="store.loadingList()" (click)="onReload()">Refresh</button>
+        <button
+          type="button"
+          class="secondary"
+          [disabled]="store.authStore.loading()"
+          (click)="onLogout()"
+        >
+          {{ store.authStore.loading() ? 'Signing out…' : 'Sign out' }}
+        </button>
+      </div>
+    </header>
+
+    @if (store.error()) {
+      <p class="status error">{{ store.error() }}</p>
+    }
+
+    @if (store.successMessage()) {
+      <p class="status success">{{ store.successMessage() }}</p>
+    }
+
+    <div class="layout-grid">
+      <app-tournament-create-form
+        [loading]="store.creating()"
+        [users]="store.users()"
+        [usersLoading]="store.loadingUsers()"
+        (submitTournament)="onCreateTournament($event)"
+      />
+
+      <app-tournament-list [loading]="store.loadingList()" [tournaments]="store.tournaments()" />
+    </div>
+  </section>
+</main>

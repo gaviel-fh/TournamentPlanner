@@ -19,7 +19,9 @@ export const routes: Routes = [
     path: 'app',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/home/home-page.component').then((m) => m.HomePageComponent),
+      import('./features/tournaments/tournaments-page.component').then(
+        (m) => m.TournamentsPageComponent,
+      ),
   },
   { path: '', pathMatch: 'full', redirectTo: 'app' },
   { path: '**', redirectTo: 'auth/login' },

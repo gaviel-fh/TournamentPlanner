@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { AuthResponse, LoginRequest, RefreshRequest, RegisterRequest } from './auth.models';
+import {
+  AuthResponse,
+  AuthUserLookup,
+  LoginRequest,
+  RefreshRequest,
+  RegisterRequest,
+} from './auth.models';
 
 type AuthApiResponse =
   | AuthResponse
@@ -37,6 +43,10 @@ export class AuthApiService {
 
   logout(): Observable<void> {
     return this.http.post<void>(`${this.authBaseUrl}/logout`, {});
+  }
+
+  getUsers(): Observable<AuthUserLookup[]> {
+    return this.http.get<AuthUserLookup[]>(`${this.authBaseUrl}/users`);
   }
 
   private normalizeAuthResponse(response: AuthApiResponse): AuthResponse {

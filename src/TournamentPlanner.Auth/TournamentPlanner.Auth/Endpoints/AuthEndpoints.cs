@@ -14,6 +14,7 @@ public static class AuthEndpoints
         group.MapLogin();
         group.MapRefresh();
         group.MapLogout();
+        group.MapUsers();
 
         return app;
     }
