@@ -3,12 +3,18 @@
   display: grid;
   place-items: center;
   padding: 2rem 1rem;
+  background:
+    linear-gradient(rgb(20 13 8 / 0.72), rgb(20 13 8 / 0.8)),
+    url('/assets/wrestling_landscape.webp');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .auth-card {
   width: min(100%, 35rem);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);

@@ -1,15 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap');
+
 :root {
   color-scheme: dark;
-  --bg: #0c1222;
-  --surface: #151f39;
-  --surface-soft: #1c2a4d;
-  --text: #e8edf8;
-  --text-soft: #b4c1dd;
-  --primary: #4f8cff;
-  --primary-soft: #6ca1ff;
-  --danger-bg: #5a2323;
-  --danger-text: #ffd1d1;
-  --border: #33456f;
+  --bg: #1f1711;
+  --surface: #2d2117;
+  --surface-soft: #3b2a1c;
+  --text: #f2dec0;
+  --text-soft: #cfb592;
+  --primary: #8f5b30;
+  --primary-soft: #b57a45;
+  --danger-bg: #5b2a21;
+  --danger-text: #f5c2b3;
+  --border: #6f4f30;
 }
 
 * {
@@ -20,16 +22,11 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  font-family:
-    Inter,
-    Segoe UI,
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: Georgia, 'Times New Roman', serif; // Cormorant SC
   background:
-    radial-gradient(1200px 650px at 0% -10%, #1f356f 0%, transparent 65%),
-    radial-gradient(1200px 650px at 100% 0%, #1c2f66 0%, transparent 70%), var(--bg);
+    radial-gradient(1100px 600px at 20% -5%, rgb(155 104 50 / 0.18), transparent 60%),
+    radial-gradient(900px 450px at 85% 10%, rgb(112 71 31 / 0.16), transparent 60%),
+    linear-gradient(180deg, #2a1d13 0%, #1b1410 100%);
   color: var(--text);
 }
 

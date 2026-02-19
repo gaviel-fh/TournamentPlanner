@@ -3,12 +3,18 @@
   display: grid;
   place-items: center;
   padding: 2rem 1rem;
+  background:
+    linear-gradient(rgb(20 13 8 / 0.72), rgb(20 13 8 / 0.8)),
+    url('/assets/wrestling_landscape.webp');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .auth-card {
-  width: min(100%, 28rem);
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  border: 1px solid var(--border);
+  width: min(100%, 35rem);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);
@@ -31,6 +37,23 @@ h1 {
 .subtitle {
   margin: 0;
   color: var(--text-soft);
+}
+
+.auth-header {
+  margin-bottom: 1rem;
+}
+
+.ornament {
+  height: 2px;
+  margin-top: 0.9rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--border) 70%, transparent) 18%,
+    var(--border) 50%,
+    color-mix(in srgb, var(--border) 70%, transparent) 82%,
+    transparent
+  );
 }
 
 .auth-form {
@@ -64,7 +87,7 @@ input:focus {
   outline-offset: 1px;
 }
 
-button {
+.sign-in-button {
   margin-top: 0.25rem;
   border: 0;
   border-radius: 0.7rem;
@@ -76,7 +99,11 @@ button {
   cursor: pointer;
 }
 
-button:disabled {
+.sign-in-button:hover:not(:disabled) {
+  filter: none;
+}
+
+.sign-in-button:disabled {
   cursor: not-allowed;
   opacity: 0.75;
 }

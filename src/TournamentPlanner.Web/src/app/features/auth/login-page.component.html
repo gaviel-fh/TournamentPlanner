@@ -1,9 +1,10 @@
 <main class="auth-page">
   <section class="auth-card">
-    <header>
+    <header class="auth-header">
       <p class="eyebrow">Tournament Planner</p>
       <h1>Sign in</h1>
       <p class="subtitle">Use your account to access your tournaments.</p>
+      <div class="ornament" aria-hidden="true"></div>
     </header>
 
     <form class="auth-form" [formGroup]="form" (ngSubmit)="onSubmit()">
@@ -37,7 +38,7 @@
         <p class="server-error">{{ authStore.error() }}</p>
       }
 
-      <button type="submit" [disabled]="authStore.loading()">
+      <button class="sign-in-button" type="submit" [disabled]="authStore.loading()">
         {{ authStore.loading() ? 'Signing in…' : 'Sign in' }}
       </button>
     </form>
