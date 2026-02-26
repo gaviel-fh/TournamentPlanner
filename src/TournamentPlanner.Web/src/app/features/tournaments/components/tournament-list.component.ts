@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TournamentSummaryResponse } from '../tournaments.models';
 
@@ -13,4 +13,6 @@ import { TournamentSummaryResponse } from '../tournaments.models';
 export class TournamentListComponent {
   readonly tournaments = input<TournamentSummaryResponse[]>([]);
   readonly loading = input(false);
+  readonly selectedTournamentId = input<string | null>(null);
+  readonly selectTournament = output<string>();
 }

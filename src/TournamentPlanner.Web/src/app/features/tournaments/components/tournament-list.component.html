@@ -1,7 +1,7 @@
 <section class="card">
   <header class="section-header">
     <h2>Existing tournaments</h2>
-    <p>Overview of persisted tournaments and participant counts.</p>
+    <p>Open a tournament to join, manage staff, and view live scoring.</p>
   </header>
 
   @if (loading()) {
@@ -9,35 +9,27 @@
   } @else if (!tournaments().length) {
     <p class="muted">No tournaments found yet.</p>
   } @else {
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Venue</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Disciplines</th>
-            <th>Participants</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of tournaments(); track item.id) {
-            <tr>
-              <td>{{ item.name }}</td>
-              <td>{{ item.venue }}</td>
-              <td>{{ item.startDateUtc | date: 'medium' }}</td>
-              <td>{{ item.endDateUtc | date: 'medium' }}</td>
-              <td>{{ item.disciplineCount }}</td>
-              <td>{{ item.participantCount }}</td>
-              <td>
-                <span class="pill">{{ item.status }}</span>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+    <div class="list-grid">
+      @for (item of tournaments(); track item.id) {
+        <article class="tournament-item" [class.active]="selectedTournamentId() === item.id">
+          <div>
+            <h3>{{ item.name }}</h3>
+            <p class="meta">{{ item.venue }} · {{ item.startDateUtc | date: 'mediumDate' }}</p>
+            <p class="meta">
+              Signup: {{ item.signupStartDateUtc | date: 'short' }} –
+              {{ item.signupEndDateUtc | date: 'short' }}
+            </p>
+          </div>
+
+          <div class="facts">
+            <span>{{ item.disciplineCount }} disciplines</span>
+            <span>{{ item.participantCount }} participants</span>
+            <span class="pill">{{ item.status }}</span>
+          </div>
+
+          <button type="button" (click)="selectTournament.emit(item.id)">Open</button>
+        </article>
+      }
     </div>
   }
 </section>

@@ -5,6 +5,7 @@ namespace TournamentPlanner.Data;
 
 public class TournamentDbContext(DbContextOptions<TournamentDbContext> options) : DbContext(options)
 {
+  public DbSet<TournamentUserProfile> TournamentUserProfiles => Set<TournamentUserProfile>();
   public DbSet<Venue> Venues => Set<Venue>();
   public DbSet<Tournament> Tournaments => Set<Tournament>();
   public DbSet<Discipline> Disciplines => Set<Discipline>();
@@ -20,6 +21,8 @@ public class TournamentDbContext(DbContextOptions<TournamentDbContext> options) 
     {
       entity.HasKey(e => e.Id);
       entity.Property(e => e.Name).HasMaxLength(200);
+      entity.Property(e => e.Latitude).HasPrecision(9, 6);
+      entity.Property(e => e.Longitude).HasPrecision(9, 6);
       entity.Property(e => e.AddressLine1).HasMaxLength(300);
       entity.Property(e => e.City).HasMaxLength(120);
       entity.Property(e => e.Country).HasMaxLength(120);
@@ -30,10 +33,17 @@ public class TournamentDbContext(DbContextOptions<TournamentDbContext> options) 
       entity.HasKey(e => e.Id);
       entity.Property(e => e.Name).HasMaxLength(200);
       entity.HasIndex(e => new { e.StartDateUtc, e.EndDateUtc });
+      entity.HasIndex(e => e.SignupEndDateUtc);
       entity.HasOne(e => e.Venue)
               .WithMany(v => v.Tournaments)
               .HasForeignKey(e => e.VenueId)
               .OnDelete(DeleteBehavior.Restrict);
+    });
+
+    modelBuilder.Entity<TournamentUserProfile>(entity =>
+    {
+      entity.HasKey(e => e.UserId);
+      entity.Property(e => e.DisplayName).HasMaxLength(120);
     });
 
     modelBuilder.Entity<Discipline>(entity =>
@@ -72,6 +82,7 @@ public class TournamentDbContext(DbContextOptions<TournamentDbContext> options) 
     {
       entity.HasKey(e => e.Id);
       entity.HasIndex(e => new { e.TournamentDisciplineId, e.ScheduledStartUtc });
+      entity.HasIndex(e => new { e.WinnerUserId, e.Status });
       entity.HasOne(e => e.TournamentDiscipline)
               .WithMany(d => d.Bouts)
               .HasForeignKey(e => e.TournamentDisciplineId)

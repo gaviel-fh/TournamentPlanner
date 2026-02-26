@@ -38,7 +38,22 @@
         (submitTournament)="onCreateTournament($event)"
       />
 
-      <app-tournament-list [loading]="store.loadingList()" [tournaments]="store.tournaments()" />
+      <app-tournament-list
+        [loading]="store.loadingList()"
+        [tournaments]="store.tournaments()"
+        [selectedTournamentId]="store.selectedTournamentId()"
+        (selectTournament)="onSelectTournament($event)"
+      />
+
+      <app-tournament-detail
+        [loading]="store.loadingDetail()"
+        [actionLoading]="store.actionLoading()"
+        [detail]="store.selectedTournamentDetail()"
+        [users]="store.users()"
+        (join)="onJoinTournament()"
+        (addStaff)="onAddStaff($event)"
+        (scoreRound)="onScoreRound($event)"
+      />
     </div>
   </section>
 </main>

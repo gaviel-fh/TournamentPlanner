@@ -1,0 +1,173 @@
+<section class="card detail-card">
+  <header class="section-header">
+    <h2>Tournament details</h2>
+    <p>Join tournaments, manage staff (organizer), and score rounds (staff/organizer).</p>
+  </header>
+
+  @if (loading()) {
+    <p class="muted">Loading tournament details…</p>
+  } @else if (!detail()) {
+    <p class="muted">Select a tournament to view details.</p>
+  } @else {
+    <section class="top-grid">
+      <article>
+        <h3>{{ detail()!.name }}</h3>
+        <p class="meta">{{ detail()!.venue }}</p>
+        <p class="meta">
+          {{ detail()!.startDateUtc | date: 'medium' }} -
+          {{ detail()!.endDateUtc | date: 'medium' }}
+        </p>
+        <p class="meta">
+          Signup: {{ detail()!.signupStartDateUtc | date: 'short' }} -
+          {{ detail()!.signupEndDateUtc | date: 'short' }}
+        </p>
+        @if (detail()!.latitude !== null && detail()!.longitude !== null) {
+          <a
+            [href]="
+              'https://www.google.com/maps?q=' + detail()!.latitude + ',' + detail()!.longitude
+            "
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Open in Google Maps
+          </a>
+        }
+      </article>
+
+      <article class="actions">
+        <p><strong>Your role:</strong> {{ detail()!.currentUserRole || 'Guest' }}</p>
+        <button
+          type="button"
+          [disabled]="!detail()!.canJoin || actionLoading()"
+          (click)="join.emit()"
+        >
+          {{ actionLoading() ? 'Working…' : 'Join tournament' }}
+        </button>
+      </article>
+    </section>
+
+    @if (detail()!.canManageStaff) {
+      <section class="staff-manage">
+        <h3>Staff management</h3>
+        <div class="staff-row">
+          <select [(ngModel)]="selectedStaffUserId">
+            <option [ngValue]="null">Select user</option>
+            @for (candidate of staffCandidates(); track candidate.id) {
+              <option [value]="candidate.id">
+                {{ candidate.firstName }} {{ candidate.lastName }} ({{ candidate.email }})
+              </option>
+            }
+          </select>
+          <button
+            type="button"
+            [disabled]="!selectedStaffUserId || actionLoading()"
+            (click)="onAddStaff()"
+          >
+            Add staff
+          </button>
+        </div>
+      </section>
+    }
+
+    <section class="members-grid">
+      <article>
+        <h3>Organizers</h3>
+        <ul>
+          @for (member of detail()!.organizers; track member.userId) {
+            <li>{{ member.displayName }}</li>
+          }
+        </ul>
+      </article>
+      <article>
+        <h3>Staff</h3>
+        <ul>
+          @for (member of detail()!.staff; track member.userId) {
+            <li>{{ member.displayName }}</li>
+          }
+        </ul>
+      </article>
+      <article>
+        <h3>Participants</h3>
+        <ul>
+          @for (member of detail()!.participants; track member.userId) {
+            <li>{{ member.displayName }}</li>
+          }
+        </ul>
+      </article>
+    </section>
+
+    <section class="disciplines">
+      @for (discipline of detail()!.disciplines; track discipline.tournamentDisciplineId) {
+        <article class="discipline-card">
+          <h3>{{ discipline.name }} ({{ discipline.code }})</h3>
+          <p class="meta">
+            {{ discipline.roundCount }} rounds · {{ discipline.boutIntervalMinutes }} min interval
+          </p>
+
+          @if (!discipline.bouts.length) {
+            <p class="muted">No bouts scheduled yet.</p>
+          } @else {
+            @for (bout of discipline.bouts; track bout.id) {
+              <div class="bout-card">
+                <header>
+                  <strong
+                    >{{ resolveName(bout.participantAUserId) }} vs
+                    {{ resolveName(bout.participantBUserId) }}</strong
+                  >
+                  <span>{{ bout.scheduledStartUtc | date: 'short' }}</span>
+                </header>
+
+                <p class="meta">
+                  Total: {{ bout.participantATotalScore }} - {{ bout.participantBTotalScore }} ·
+                  Status: {{ bout.status }}
+                </p>
+
+                <div class="rounds">
+                  @for (round of bout.rounds; track round.roundNumber) {
+                    <div class="round-row">
+                      <span
+                        >Round {{ round.roundNumber }}: {{ round.participantAScore }} -
+                        {{ round.participantBScore }}</span
+                      >
+
+                      @if (detail()!.canScore) {
+                        <div class="score-actions">
+                          <button
+                            type="button"
+                            [disabled]="actionLoading()"
+                            (click)="
+                              scoreRound.emit({
+                                boutId: bout.id,
+                                roundNumber: round.roundNumber,
+                                awardedToUserId: bout.participantAUserId,
+                              })
+                            "
+                          >
+                            +1 {{ resolveName(bout.participantAUserId) }}
+                          </button>
+                          <button
+                            type="button"
+                            [disabled]="actionLoading()"
+                            (click)="
+                              scoreRound.emit({
+                                boutId: bout.id,
+                                roundNumber: round.roundNumber,
+                                awardedToUserId: bout.participantBUserId,
+                              })
+                            "
+                          >
+                            +1 {{ resolveName(bout.participantBUserId) }}
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          }
+        </article>
+      }
+    </section>
+  }
+</section>

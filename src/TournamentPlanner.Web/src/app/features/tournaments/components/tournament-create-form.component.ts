@@ -16,12 +16,28 @@ import { AuthUserLookup } from '../../../core/auth/auth.models';
 const dateOrderValidator = (control: AbstractControl): ValidationErrors | null => {
   const start = control.get('startDateUtc')?.value as string | undefined;
   const end = control.get('endDateUtc')?.value as string | undefined;
+  const signupStart = control.get('signupStartDateUtc')?.value as string | undefined;
+  const signupEnd = control.get('signupEndDateUtc')?.value as string | undefined;
 
   if (!start || !end) {
     return null;
   }
 
-  return new Date(end) >= new Date(start) ? null : { invalidDateOrder: true };
+  if (new Date(end) < new Date(start)) {
+    return { invalidDateOrder: true };
+  }
+
+  if (signupStart && signupEnd && new Date(signupEnd) < new Date(signupStart)) {
+    return { invalidSignupOrder: true };
+  }
+
+  if (signupStart && signupEnd) {
+    if (new Date(signupStart) < new Date(start) || new Date(signupEnd) > new Date(end)) {
+      return { invalidSignupWindow: true };
+    }
+  }
+
+  return null;
 };
 
 @Component({
@@ -53,6 +69,14 @@ export class TournamentCreateFormComponent {
         endDateUtc: this.fb.nonNullable.control(this.defaultLocalDateTime(1), [
           Validators.required,
         ]),
+        signupStartDateUtc: this.fb.nonNullable.control(this.defaultLocalDateTime(), [
+          Validators.required,
+        ]),
+        signupEndDateUtc: this.fb.nonNullable.control(this.defaultLocalDateTime(1), [
+          Validators.required,
+        ]),
+        latitude: this.fb.control<number | null>(null),
+        longitude: this.fb.control<number | null>(null),
       },
       {
         validators: [dateOrderValidator],
@@ -149,6 +173,10 @@ export class TournamentCreateFormComponent {
       venueName: raw.basicInfo.venueName,
       startDateUtc: raw.basicInfo.startDateUtc,
       endDateUtc: raw.basicInfo.endDateUtc,
+      signupStartDateUtc: raw.basicInfo.signupStartDateUtc,
+      signupEndDateUtc: raw.basicInfo.signupEndDateUtc,
+      latitude: raw.basicInfo.latitude,
+      longitude: raw.basicInfo.longitude,
       organizerUserIds: raw.organizers.organizerUserIds,
       staffUserIds: raw.staff.staffUserIds,
       disciplines: raw.boutInfo.disciplines.map((discipline) => ({

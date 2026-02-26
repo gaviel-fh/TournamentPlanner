@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TournamentPlanner.Data;
 using TournamentPlanner.Data.Entities;
 using TournamentPlanner.Tournaments.Contracts;
+using TournamentPlanner.Tournaments.Domain.Services;
 using TournamentPlanner.Tournaments.Services;
 
 namespace TournamentPlanner.Tournaments.Endpoints.Tournament;
@@ -15,6 +16,7 @@ public static class GenerateRoundRobinScheduleEndpoint
       GenerateRoundRobinScheduleRequest request,
       TournamentDbContext db,
       IRoundRobinGenerator roundRobinGenerator,
+      ITournamentDomainService domainService,
       CancellationToken cancellationToken)
   {
     var tournamentDiscipline = await db.TournamentDisciplines
@@ -42,9 +44,14 @@ public static class GenerateRoundRobinScheduleEndpoint
         .Distinct()
         .ToListAsync(cancellationToken);
 
-    if (participants.Count < 2)
+    var validationErrors = domainService.ValidateScheduleGeneration(
+        DateTime.UtcNow,
+        tournamentDiscipline.Tournament.SignupEndDateUtc,
+        participants.Count);
+
+    if (validationErrors.Count > 0)
     {
-      return Results.BadRequest(new { message = "At least two participants are required." });
+      return Results.BadRequest(new { errors = validationErrors });
     }
 
     var pairings = roundRobinGenerator.GeneratePairings(participants);

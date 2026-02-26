@@ -21,7 +21,11 @@ public static class GetAllTournamentsEndpoint
             t.Name,
             t.StartDateUtc,
             t.EndDateUtc,
+            t.SignupStartDateUtc,
+            t.SignupEndDateUtc,
             t.Venue.Name,
+            t.Venue.Latitude,
+            t.Venue.Longitude,
             t.Disciplines.Count,
             t.Members.Count(m => m.Role == TournamentMemberRole.Participant),
             t.Status.ToString()))

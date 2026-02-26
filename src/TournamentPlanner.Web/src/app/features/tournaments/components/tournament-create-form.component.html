@@ -30,8 +30,36 @@
             <input type="datetime-local" formControlName="endDateUtc" />
           </label>
 
+          <label>
+            <span>Signup start</span>
+            <input type="datetime-local" formControlName="signupStartDateUtc" />
+          </label>
+
+          <label>
+            <span>Signup end</span>
+            <input type="datetime-local" formControlName="signupEndDateUtc" />
+          </label>
+
+          <label>
+            <span>Latitude (optional)</span>
+            <input type="number" formControlName="latitude" step="0.000001" min="-90" max="90" />
+          </label>
+
+          <label>
+            <span>Longitude (optional)</span>
+            <input type="number" formControlName="longitude" step="0.000001" min="-180" max="180" />
+          </label>
+
           @if (basicInfoGroup.errors?.['invalidDateOrder']) {
             <p class="field-error full">End date must be after start date.</p>
+          }
+
+          @if (basicInfoGroup.errors?.['invalidSignupOrder']) {
+            <p class="field-error full">Signup end must be after signup start.</p>
+          }
+
+          @if (basicInfoGroup.errors?.['invalidSignupWindow']) {
+            <p class="field-error full">Signup window must be within tournament dates.</p>
           }
         </div>
 

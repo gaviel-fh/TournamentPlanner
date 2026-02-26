@@ -13,6 +13,10 @@ export class TournamentFeatureCreateService {
       venueName: formValue.venueName.trim(),
       startDateUtc: this.toUtcIso(formValue.startDateUtc),
       endDateUtc: this.toUtcIso(formValue.endDateUtc),
+      signupStartDateUtc: this.toUtcIso(formValue.signupStartDateUtc),
+      signupEndDateUtc: this.toUtcIso(formValue.signupEndDateUtc),
+      latitude: this.toNullableNumber(formValue.latitude),
+      longitude: this.toNullableNumber(formValue.longitude),
       organizerUserIds: formValue.organizerUserIds,
       staffUserIds: formValue.staffUserIds,
       participantUserIds: [],
@@ -35,5 +39,13 @@ export class TournamentFeatureCreateService {
 
   private toUtcIso(localDateTime: string): string {
     return new Date(localDateTime).toISOString();
+  }
+
+  private toNullableNumber(value: number | null): number | null {
+    if (value === null || Number.isNaN(value)) {
+      return null;
+    }
+
+    return Number(value);
   }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TournamentPlanner.Data;
 using TournamentPlanner.Data.Entities;
 using TournamentPlanner.Tournaments.Contracts;
+using TournamentPlanner.Tournaments.Domain.Services;
 
 namespace TournamentPlanner.Tournaments.Endpoints.Tournament;
 
@@ -11,40 +12,32 @@ public static class CreateTournamentEndpoint
   public static async Task<IResult> Handle(
       CreateTournamentRequest request,
       TournamentDbContext db,
+      ITournamentDomainService domainService,
       CancellationToken cancellationToken)
   {
-    if (string.IsNullOrWhiteSpace(request.Name))
+    var model = request.ToDomain();
+    var validationErrors = domainService.ValidateTournamentCreation(model);
+    if (validationErrors.Count > 0)
     {
-      return Results.BadRequest(new { message = "Tournament name is required." });
-    }
-
-    if (string.IsNullOrWhiteSpace(request.VenueName))
-    {
-      return Results.BadRequest(new { message = "Venue name is required." });
-    }
-
-    if (request.EndDateUtc < request.StartDateUtc)
-    {
-      return Results.BadRequest(new { message = "End date must be after start date." });
-    }
-
-    if (request.Disciplines.Count == 0)
-    {
-      return Results.BadRequest(new { message = "At least one discipline is required." });
+      return Results.BadRequest(new { errors = validationErrors });
     }
 
     var venue = new Venue
     {
       Id = Guid.NewGuid(),
-      Name = request.VenueName.Trim()
+      Name = model.Location.VenueName.Trim(),
+      Latitude = model.Location.Latitude,
+      Longitude = model.Location.Longitude
     };
 
     var tournament = new Data.Entities.Tournament
     {
       Id = Guid.NewGuid(),
-      Name = request.Name.Trim(),
-      StartDateUtc = request.StartDateUtc,
-      EndDateUtc = request.EndDateUtc,
+      Name = model.Name.Trim(),
+      StartDateUtc = model.StartDateUtc,
+      EndDateUtc = model.EndDateUtc,
+      SignupStartDateUtc = model.SignupStartDateUtc,
+      SignupEndDateUtc = model.SignupEndDateUtc,
       VenueId = venue.Id,
       Status = TournamentStatus.Draft
     };
@@ -52,22 +45,31 @@ public static class CreateTournamentEndpoint
     db.Venues.Add(venue);
     db.Tournaments.Add(tournament);
 
-    AddMembers(tournament.Id, request.OrganizerUserIds, TournamentMemberRole.Organizer, db);
-    AddMembers(tournament.Id, request.StaffUserIds, TournamentMemberRole.Staff, db);
-    AddMembers(tournament.Id, request.ParticipantUserIds, TournamentMemberRole.Participant, db);
+    AddMembers(tournament.Id, model.OrganizerUserIds, TournamentMemberRole.Organizer, db);
+    AddMembers(tournament.Id, model.StaffUserIds, TournamentMemberRole.Staff, db);
+    AddMembers(tournament.Id, model.ParticipantUserIds, TournamentMemberRole.Participant, db);
 
-    foreach (var disciplineRequest in request.Disciplines)
+    var profileUserIds = model.OrganizerUserIds
+        .Concat(model.StaffUserIds)
+        .Concat(model.ParticipantUserIds)
+        .Distinct()
+        .ToArray();
+
+    var existingProfileUserIds = await db.TournamentUserProfiles
+        .Where(p => profileUserIds.Contains(p.UserId))
+        .Select(p => p.UserId)
+        .ToListAsync(cancellationToken);
+
+    foreach (var userId in profileUserIds.Except(existingProfileUserIds))
     {
-      if (string.IsNullOrWhiteSpace(disciplineRequest.Code) || string.IsNullOrWhiteSpace(disciplineRequest.Name))
+      db.TournamentUserProfiles.Add(new TournamentUserProfile
       {
-        return Results.BadRequest(new { message = "Each discipline requires code and name." });
-      }
+        UserId = userId
+      });
+    }
 
-      if (disciplineRequest.RoundCount <= 0)
-      {
-        return Results.BadRequest(new { message = "Round count must be greater than zero." });
-      }
-
+    foreach (var disciplineRequest in model.Disciplines)
+    {
       var normalizedCode = disciplineRequest.Code.Trim().ToUpperInvariant();
       var discipline = await db.Disciplines.FirstOrDefaultAsync(
           d => d.Code == normalizedCode,

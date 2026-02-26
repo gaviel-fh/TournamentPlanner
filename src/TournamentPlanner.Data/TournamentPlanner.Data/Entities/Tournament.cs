@@ -7,6 +7,8 @@ public class Tournament
   public Guid VenueId { get; set; }
   public DateTime StartDateUtc { get; set; }
   public DateTime EndDateUtc { get; set; }
+  public DateTime SignupStartDateUtc { get; set; }
+  public DateTime SignupEndDateUtc { get; set; }
   public TournamentStatus Status { get; set; } = TournamentStatus.Draft;
   public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 

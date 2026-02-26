@@ -26,8 +26,16 @@ public static class CompleteBoutEndpoint
       return Results.BadRequest(new { message = "No rounds found for this bout." });
     }
 
-    var participantATotal = bout.Rounds.Sum(r => r.ParticipantAScore);
-    var participantBTotal = bout.Rounds.Sum(r => r.ParticipantBScore);
+    var participantATotal = bout.ParticipantATotalScore;
+    var participantBTotal = bout.ParticipantBTotalScore;
+
+    if (participantATotal == 0 && participantBTotal == 0)
+    {
+      participantATotal = bout.Rounds.Sum(r => r.ParticipantAScore);
+      participantBTotal = bout.Rounds.Sum(r => r.ParticipantBScore);
+      bout.ParticipantATotalScore = participantATotal;
+      bout.ParticipantBTotalScore = participantBTotal;
+    }
 
     bout.Status = BoutStatus.Completed;
     bout.WinnerUserId = participantATotal == participantBTotal

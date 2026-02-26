@@ -7,7 +7,7 @@ public static class BoutEndpointMapping
 {
   public static IEndpointRouteBuilder MapBoutEndpoints(this IEndpointRouteBuilder app)
   {
-    var group = app.MapGroup("/bouts");
+    var group = app.MapGroup("/bouts").RequireAuthorization();
 
     group.MapPost("/{boutId:guid}/rounds/{roundNumber:int}/score-events", ScoreRoundEndpoint.Handle);
     group.MapPost("/{boutId:guid}/complete", CompleteBoutEndpoint.Handle);

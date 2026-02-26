@@ -8,6 +8,8 @@ public class Bout
   public Guid ParticipantBUserId { get; set; }
   public DateTime ScheduledStartUtc { get; set; }
   public BoutStatus Status { get; set; } = BoutStatus.Scheduled;
+  public int ParticipantATotalScore { get; set; }
+  public int ParticipantBTotalScore { get; set; }
   public Guid? WinnerUserId { get; set; }
 
   public TournamentDiscipline TournamentDiscipline { get; set; } = null!;
